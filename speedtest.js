@@ -15,6 +15,7 @@ var logger = new (winston.Logger)({
 var runSpeedTest = () => {
   speedtest().on('data', data => {
     console.log('Speedtest successfully completed :)');
+    data.test_type = testType;
     logger.log('info',data);
   })
   .on('testserver', server => {
@@ -30,7 +31,7 @@ var runSpeedTest = () => {
     // data overload includes too much
   })
   .on('error', err => {
-    console.log('The speed test has encountered a terrible error', err);
+    console.log('speed test hit an error', err);
   });
 }
 
