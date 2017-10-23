@@ -13,8 +13,9 @@ var logger = new (winston.Logger)({
 });
 
 var runSpeedTest = () => {
+  console.log(`Type: ${testType}`);
   speedtest().on('data', data => {
-    console.log('Speedtest successfully completed :)');
+    console.log('Speed test complete. Results logged.');
     data.test_type = testType;
     logger.log('info',data);
   })
