@@ -7,6 +7,6 @@ if(!cron.validate(cronstr)) {
 	cronstr = "0,30 * * * *";
 }
 
-cron.schedule(, () => {
+cron.schedule(cronstr, () => {
 	runSpeedTest();
 });
