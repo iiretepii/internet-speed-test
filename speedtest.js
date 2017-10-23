@@ -1,6 +1,8 @@
 var winston = require("winston");
 var speedtest = require("speedtest-net");
 
+var testType = process.env.TEST_TYPE || "wired";
+
 var logger = new (winston.Logger)({
   transports: [
     new (winston.transports.File)({
