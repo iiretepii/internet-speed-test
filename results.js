@@ -1,6 +1,6 @@
 var fs = require('fs');
 var logger = require('winston');
-var getLogResults = require('./parseLog.js');
+var getLogResults = require('./parse-log.js');
 
 var getAnalysisObjects = () => {
 	var analysisObj = {};
