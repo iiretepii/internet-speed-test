@@ -10,3 +10,5 @@ if(!cron.validate(cronstr)) {
 cron.schedule(cronstr, () => {
 	runSpeedTest();
 });
+
+console.log("\n~~~cron job successfully instantiated~~~\n\n");
