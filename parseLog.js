@@ -1,13 +1,13 @@
-let fs = require('fs');
+var fs = require('fs');
 
-let logResults;
+var logResults;
 
-let getLogResults = () => {
+var getLogResults = () => {
 	if(!logResults || logResults.length < 1) {
 		logResults = [];
-		let logText = fs.readFileSync(__dirname + '/test-results.log', "UTF-8");
-		let logEntries = logText.split("\n");
-		let parsedEntry;
+		var logText = fs.readFileSync(__dirname + '/test-results.log', "UTF-8");
+		var logEntries = logText.split("\n");
+		var parsedEntry;
 		for (var i = 0; i < logEntries.length; i++) {
 			if(logEntries[i]) {
 				parsedEntry = JSON.parse(logEntries[i]);

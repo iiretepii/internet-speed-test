@@ -1,5 +1,5 @@
-let winston = require("winston");
-let speedtest = require("speedtest-net");
+var winston = require("winston");
+var speedtest = require("speedtest-net");
 
 var logger = new (winston.Logger)({
   transports: [

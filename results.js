@@ -1,10 +1,10 @@
-let fs = require('fs');
-let logger = require('winston');
-let getLogResults = require('./parseLog.js');
+var fs = require('fs');
+var logger = require('winston');
+var getLogResults = require('./parseLog.js');
 
-let getAnalysisObjects = () => {
-	let analysisObj = {};
-	let results = getLogResults();
+var getAnalysisObjects = () => {
+	var analysisObj = {};
+	var results = getLogResults();
 	for(var key in results[0].speeds) {
 		analysisObj[key] = {
 			min: null, 
@@ -18,7 +18,7 @@ let getAnalysisObjects = () => {
 	return analysisObj;
 };
 
-let feedAnalysisObj = (key, analysisRow, result, timestamp) => {
+var feedAnalysisObj = (key, analysisRow, result, timestamp) => {
 	if(key.indexOf('original') > -1) {
 		result = result * 8 / 1000000;
 	}
@@ -33,14 +33,14 @@ let feedAnalysisObj = (key, analysisRow, result, timestamp) => {
 	analysisRow.total = result + analysisRow.total;
 }
 
-let getAvg = (analysisObjRow) => {
+var getAvg = (analysisObjRow) => {
 	return (analysisObjRow.total / analysisObjRow.num).toFixed(2);
 }
 
-let getAnalysis = () => {
-	let results = getLogResults();
-	let analysisObj = getAnalysisObjects();
-	let numberOfTests = results.length;
+var getAnalysis = () => {
+	var results = getLogResults();
+	var analysisObj = getAnalysisObjects();
+	var numberOfTests = results.length;
 	for (var i = numberOfTests - 1; i >= 0; i--) {
 		for(var key in analysisObj) {
 			feedAnalysisObj(
