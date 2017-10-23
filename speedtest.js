@@ -17,6 +17,7 @@ var runSpeedTest = () => {
   console.log(moment().format('MMMM Do YYYY, h:mm:ss a'));
   console.log(`Type: ${testType}`);
   speedtest().on('data', data => {
+    console.log("ISP: ${data.client.isp}");
     console.log('Speed test complete. Results logged.\n');
     data.test_type = testType;
     logger.log('info',data);
