@@ -5,7 +5,7 @@ var moment = require("moment");
 var cronstr = process.env.CRON_STRING;
 
 if(!cron.validate(cronstr)) {
-	cronstr = "0,30 * * * *";
+	cronstr = "0/15 * * * *";
 }
 
 cron.schedule(cronstr, () => {
