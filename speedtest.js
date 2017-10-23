@@ -1,5 +1,6 @@
 var winston = require("winston");
 var speedtest = require("speedtest-net");
+var moment = require("moment");
 
 var testType = process.env.TEST_TYPE || "wired";
 
@@ -13,9 +14,10 @@ var logger = new (winston.Logger)({
 });
 
 var runSpeedTest = () => {
+  console.log(moment().format('MMMM Do YYYY, h:mm:ss a'));
   console.log(`Type: ${testType}`);
   speedtest().on('data', data => {
-    console.log('Speed test complete. Results logged.');
+    console.log('Speed test complete. Results logged.\n');
     data.test_type = testType;
     logger.log('info',data);
   })
