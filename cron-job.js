@@ -1,5 +1,6 @@
 var cron = require("node-cron");
 var runSpeedTest = require("./speedtest.js");
+var moment = require("moment");
 
 var cronstr = process.env.CRON_STRING;
 
@@ -11,4 +12,4 @@ cron.schedule(cronstr, () => {
 	runSpeedTest();
 });
 
-console.log("\n~~~cron job successfully instantiated~~~\n\n");
+console.log(`\ncron job started successfully ${moment().format('MMMM Do YYYY, h:mm:ss a')}\n\n`);
