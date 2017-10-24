@@ -70,7 +70,7 @@ var getAnalysis = () => {
 
 		}
 	}
-	let logStr;
+	var logStr;
 	for(var key in analysisObj) {
 		logStr = `\n${key.toUpperCase()}`
 			+ `\navg: ${getAvg(analysisObj[key])} Mb/s`
