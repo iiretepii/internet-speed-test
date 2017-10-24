@@ -3,6 +3,8 @@ var logger = require('winston');
 var getLogResults = require('./parse-log.js');
 var moment = require("moment");
 
+var percent
+
 // added 25% buffer
 var expectedDownload = (parseFloat(process.env.EXPECTED_DOWNLOAD) || 75) * (1 - 0.25);
 var expectedUpload = (parseFloat(process.env.EXPECTED_UPLOAD) || 10) * (1 - 0.25);
@@ -93,8 +95,15 @@ var formatDateTime = (dateTime) => {
 	return moment(dateTime).format('MMMM Do YYYY, h:mm:ss a') || '';
 }
 
+var firstTime;
+
 var getTimeNumber = (dateTime) => {
-	return moment(dateTime).unix() / 60 / 60;
+	var time = moment(dateTime).unix() / 60;
+	if(!firstTime) {
+		firstTime = time + 0;
+	}
+	time = firstTime - time;
+	return time+0;
 }
 
 var getAnalysis = () => {
@@ -124,9 +133,9 @@ var getAnalysis = () => {
 			`r^2: ${lr.r2.toFixed(5)}`
 		];
 		if(key === 'download') {
-			logArray.push(`# times download under: ${analysisObj[key].downloadUnder}`);
+			logArray.push(`# times download below expected: ${analysisObj[key].downloadUnder}`);
 		} else if(key === 'upload') {
-			logArray.push(`# times uploadUnder: ${analysisObj[key].uploadUnder}`);
+			logArray.push(`# times upload below expected: ${analysisObj[key].uploadUnder}`);
 		}
 		logger.log('info', logArray.join('\n') + '\n');
 	}
