@@ -1,6 +1,7 @@
 var fs = require('fs');
 var logger = require('winston');
-var getLogResults = require('./parseLog.js');
+var getLogResults = require('./parse-log.js');
+var moment = require("moment");
 
 var expectedDownload = parseFloat(process.env.EXPECTED_DOWNLOAD) || 75;
 var expectedUpload = parseFloat(process.env.EXPECTED_UPLOAD) || 10;
@@ -50,6 +51,10 @@ var getAvg = (analysisObjRow) => {
 	return (analysisObjRow.total / analysisObjRow.num).toFixed(2);
 }
 
+var formatDateTime = (dateTime) => {
+	return moment(dateTime).format('MMMM Do YYYY, h:mm:ss a') || '';
+}
+
 var getAnalysis = () => {
 	var results = getLogResults();
 	var analysisObj = getAnalysisObjects();
@@ -66,7 +71,12 @@ var getAnalysis = () => {
 		}
 	}
 	for(var key in analysisObj) {
-		logger.log('info',`${key.toUpperCase()}\navg: ${getAvg(analysisObj[key])} Mb/s\n${analysisObj[key].min.toFixed(2)} Mb/s -> ${analysisObj[key].max.toFixed(2)} Mb/s\n`);
+		logger.log('info',
+			`\n${key.toUpperCase()}`
+			+ `\navg: ${getAvg(analysisObj[key])} Mb/s`
+			+ `\nmin: ${analysisObj[key].min.toFixed(2)} Mb/s (${formatDateTime(analysisObj[key].maxDate)})` 
+			+ `\nmax: ${analysisObj[key].max.toFixed(2)} Mb/s (${formatDateTime(analysisObj[key].minDate)})\n`
+		);
 	}
 }
 
