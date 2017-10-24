@@ -15,9 +15,9 @@ There are only a few ways to run the app
 # setting environment variables
 
 ## MacOSX/Linux
-`$ export EXPECTED_DOWNLOAD=1000
-$ echo $EXPECTED_DOWNLOAD // -> 1000`
+```$ export EXPECTED_DOWNLOAD=1000
+$ echo $EXPECTED_DOWNLOAD // -> 1000```
 
 ## Windows
-`C:\internet-speed-test>set EXPECTED_DOWNLOAD
-C:\internet-speed-test>echo %EXPECTED_DOWNLOAD%`
+```C:\internet-speed-test>set EXPECTED_DOWNLOAD
+C:\internet-speed-test>echo %EXPECTED_DOWNLOAD%```
