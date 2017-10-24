@@ -2,6 +2,9 @@ var fs = require('fs');
 var logger = require('winston');
 var getLogResults = require('./parseLog.js');
 
+var expectedDownload = parseFloat(process.env.EXPECTED_DOWNLOAD) || 75;
+var expectedUpload = parseFloat(process.env.EXPECTED_UPLOAD) || 10;
+
 var getAnalysisObjects = () => {
 	var analysisObj = {};
 	var results = getLogResults();
@@ -11,7 +14,9 @@ var getAnalysisObjects = () => {
 			minDate: '', 
 			max: null, 
 			maxDate: '', 
-			total: 0, 
+			total: 0,
+			downloadUnder: 0,
+			uploadUnder: 0,
 			num: results.length + 0
 		}
 	}
@@ -21,6 +26,14 @@ var getAnalysisObjects = () => {
 var feedAnalysisObj = (key, analysisRow, result, timestamp) => {
 	if(key.indexOf('original') > -1) {
 		result = result * 8 / 1000000;
+	} else if(key === "download") {
+		if(result < expectedDownload) {
+			analysisRow.downloadUnder++;
+		}
+	} else if(key === "upload") {
+		if(result < expectedUpload) {
+			analysisRow.uploadUnder++;
+		}
 	}
 	if(analysisRow.min === null || result < analysisRow.min) {
 		analysisRow.min = result+0;
