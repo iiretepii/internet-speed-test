@@ -23,7 +23,7 @@ var runSpeedTest = () => {
     logger.log('info',data);
   })
   .on('testserver', server => {
-    console.log(`Server: ${server.name} (${server.bestPing.toFixed(0)}ms)`);
+    console.log(`Server: ${server.sponsor} - ${server.name} - ${server.bestPing.toFixed(0)}ms`);
   })
   .on('downloadspeed', speed => {
     console.log(`download speed: ${(speed).toFixed(2)} Mb/s`);

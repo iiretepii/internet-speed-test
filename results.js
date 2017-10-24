@@ -3,17 +3,20 @@ var logger = require('winston');
 var getLogResults = require('./parse-log.js');
 var moment = require("moment");
 
-var expectedDownload = parseFloat(process.env.EXPECTED_DOWNLOAD) || 75;
-var expectedUpload = parseFloat(process.env.EXPECTED_UPLOAD) || 10;
+// added 25% buffer
+var expectedDownload = (parseFloat(process.env.EXPECTED_DOWNLOAD) || 75) * (1 - 0.25);
+var expectedUpload = (parseFloat(process.env.EXPECTED_UPLOAD) || 10) * (1 - 0.25);
 
 var getAnalysisObjects = () => {
 	var analysisObj = {};
 	var results = getLogResults();
 	for(var key in results[0].speeds) {
 		analysisObj[key] = {
-			min: null, 
-			minDate: '', 
-			max: null, 
+			times: [],
+			speeds: [],
+			min: null,
+			minDate: '',
+			max: null,
 			maxDate: '', 
 			total: 0,
 			downloadUnder: 0,
@@ -24,7 +27,42 @@ var getAnalysisObjects = () => {
 	return analysisObj;
 };
 
+var linearRegression = (y,x) => {
+	var lr = {};
+	var n = y.length;
+	var sum_x = 0;
+	var sum_y = 0;
+	var sum_xy = 0;
+	var sum_xx = 0;
+	var sum_yy = 0;
+
+	for (var i = 0; i < y.length; i++) {
+		sum_x += x[i];
+		sum_y += y[i];
+		sum_xy += (x[i]*y[i]);
+		sum_xx += (x[i]*x[i]);
+		sum_yy += (y[i]*y[i]);
+	}
+
+	lr['slope'] = (n * sum_xy - sum_x * sum_y) / (n*sum_xx - sum_x * sum_x);
+	lr['intercept'] = (sum_y - lr.slope * sum_x) / n;
+	lr['r2'] = Math.pow(
+		(n*sum_xy - sum_x*sum_y)
+		/
+		Math.sqrt(
+			(n*sum_xx-sum_x*sum_x)
+			*
+			(n*sum_yy-sum_y*sum_y)
+		),
+		2
+	);
+
+	return lr;
+}
+
 var feedAnalysisObj = (key, analysisRow, result, timestamp) => {
+	analysisRow.speeds.push(result);
+	analysisRow.times.push(getTimeNumber(timestamp));
 	if(key.indexOf('original') > -1) {
 		result = result * 8 / 1000000;
 	} else if(key === "download") {
@@ -55,6 +93,10 @@ var formatDateTime = (dateTime) => {
 	return moment(dateTime).format('MMMM Do YYYY, h:mm:ss a') || '';
 }
 
+var getTimeNumber = (dateTime) => {
+	return moment(dateTime).unix() / 60 / 60;
+}
+
 var getAnalysis = () => {
 	var results = getLogResults();
 	var analysisObj = getAnalysisObjects();
@@ -67,22 +109,28 @@ var getAnalysis = () => {
 				results[i].speeds[key], 
 				results[i].timestamp
 			);
-
 		}
 	}
-	var logStr;
+	var logArray;
+	var lr;
 	for(var key in analysisObj) {
-		logStr = `\n${key.toUpperCase()}`
-			+ `\navg: ${getAvg(analysisObj[key])} Mb/s`
-			+ `\nmin: ${analysisObj[key].min.toFixed(2)} Mb/s (${formatDateTime(analysisObj[key].maxDate)})` 
-			+ `\nmax: ${analysisObj[key].max.toFixed(2)} Mb/s (${formatDateTime(analysisObj[key].minDate)})\n`;
+		lr = linearRegression(analysisObj[key].times,analysisObj[key].speeds);
+		logArray = [
+			`${key.toUpperCase()}`,
+			`avg: ${getAvg(analysisObj[key])} Mb/s`,
+			`min: ${analysisObj[key].min.toFixed(2)} Mb/s (${formatDateTime(analysisObj[key].maxDate)})`,
+			`max: ${analysisObj[key].max.toFixed(2)} Mb/s (${formatDateTime(analysisObj[key].minDate)})`,
+			`slope: ${lr.slope.toFixed(4)}`,
+			`r^2: ${lr.r2.toFixed(5)}`
+		];
 		if(key === 'download') {
-			logStr += `\n# times download under: ${analysisObj[key].downloadUnder}`;
+			logArray.push(`# times download under: ${analysisObj[key].downloadUnder}`);
 		} else if(key === 'upload') {
-			logStr += '\n# times uploadUnder: ${analysisObj[key].uploadUnder}'
+			logArray.push(`# times uploadUnder: ${analysisObj[key].uploadUnder}`);
 		}
-		logger.log('info', logStr);
+		logger.log('info', logArray.join('\n') + '\n');
 	}
+	logArray = null;
 }
 
 getAnalysis();
