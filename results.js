@@ -70,13 +70,18 @@ var getAnalysis = () => {
 
 		}
 	}
+	let logStr;
 	for(var key in analysisObj) {
-		logger.log('info',
-			`\n${key.toUpperCase()}`
+		logStr = `\n${key.toUpperCase()}`
 			+ `\navg: ${getAvg(analysisObj[key])} Mb/s`
 			+ `\nmin: ${analysisObj[key].min.toFixed(2)} Mb/s (${formatDateTime(analysisObj[key].maxDate)})` 
-			+ `\nmax: ${analysisObj[key].max.toFixed(2)} Mb/s (${formatDateTime(analysisObj[key].minDate)})\n`
-		);
+			+ `\nmax: ${analysisObj[key].max.toFixed(2)} Mb/s (${formatDateTime(analysisObj[key].minDate)})\n`;
+		if(key === 'download') {
+			logStr += `\n# times download under: ${analysisObj[key].downloadUnder}`;
+		} else if(key === 'upload') {
+			logStr += '\n# times uploadUnder: ${analysisObj[key].uploadUnder}'
+		}
+		logger.log('info', logStr);
 	}
 }
 
