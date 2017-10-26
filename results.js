@@ -1,11 +1,7 @@
 var fs = require('fs');
-var logger = require('winston');
-var getLogResults = require('./parse-log.js');
 var moment = require("moment");
-
-logger.level = process.env.LOGGING_LEVEL || 'info';
-
-var percent
+var logger = require('./logging-service');
+var getLogResults = require('./parse-log');
 
 // added 25% buffer
 var expectedDownload = (parseFloat(process.env.EXPECTED_DOWNLOAD) || 75) * (1 - 0.25);
@@ -32,6 +28,7 @@ var getAnalysisObjects = () => {
 };
 
 var linearRegression = (y,x) => {
+
 	var lr = {};
 	var n = y.length;
 	var sum_x = 0;
@@ -104,11 +101,11 @@ var maxTime;
 var getTimeNumber = (dateTime) => {
 	if(minTime == undefined || dateTime < minTime) {
 		minTime = dateTime+'';
-		logger.debug(`setting minTime ${formatDateTime(minTime)}`);
+		logger.silly(`setting minTime ${formatDateTime(minTime)}`);
 	}
 	if(maxTime == undefined || dateTime > maxTime) {
 		maxTime = dateTime+'';
-		logger.debug(`setting maxTime ${formatDateTime(maxTime)}`);
+		logger.silly(`setting maxTime ${formatDateTime(maxTime)}`);
 	}
 	var time = moment(dateTime).unix() / 60;
 	if(!firstTime) {

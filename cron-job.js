@@ -2,7 +2,7 @@ var cron = require("node-cron");
 var runSpeedTest = require("./speedtest.js");
 var moment = require("moment");
 
-var cronstr = "0,14,29,44 * * * *";
+var cronstr = "0,15,30,45 * * * *";
 
 cron.schedule(cronstr, () => {
     runSpeedTest();
