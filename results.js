@@ -96,9 +96,22 @@ var formatDateTime = (dateTime) => {
 }
 
 var firstTime;
+var minTime;
+var maxTime;
+
+var getTestDuration = () => {
+	return moment(minTime).diff(moment(maxTime),'days');
+}
 
 var getTimeNumber = (dateTime) => {
-	var time = moment(dateTime).unix() / 60;
+	var time = moment(dateTime).unix();
+	if(!minTime || time < minTime) {
+		minTime = time+0;
+	}
+	if(!maxTime || time > maxTime) {
+		maxTime = time+0;
+	}
+	time = time / 60;
 	if(!firstTime) {
 		firstTime = time + 0;
 	}
@@ -121,6 +134,8 @@ var getAnalysis = () => {
 		}
 	}
 	var logArray;
+	var divider = '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
+	var masterLogArray = [`\n${divider}\nTested over ${getTestDuration()} days\n${divider}`];
 	var lr;
 	for(var key in analysisObj) {
 		lr = linearRegression(analysisObj[key].times,analysisObj[key].speeds);
@@ -130,16 +145,17 @@ var getAnalysis = () => {
 			`min: ${analysisObj[key].min.toFixed(2)} Mb/s (${formatDateTime(analysisObj[key].maxDate)})`,
 			`max: ${analysisObj[key].max.toFixed(2)} Mb/s (${formatDateTime(analysisObj[key].minDate)})`,
 			`slope: ${lr.slope.toFixed(4)}`,
-			`r^2: ${lr.r2.toFixed(5)}`
+			`r2: ${lr.r2.toFixed(5)}`
 		];
 		if(key === 'download') {
 			logArray.push(`# times download below expected: ${analysisObj[key].downloadUnder}`);
 		} else if(key === 'upload') {
 			logArray.push(`# times upload below expected: ${analysisObj[key].uploadUnder}`);
 		}
-		logger.log('info', logArray.join('\n') + '\n');
+		masterLogArray.push(logArray.join('\n'));
 	}
 	logArray = null;
+	logger.log('info',`\n${masterLogArray.join('\n\n')}\n\n${divider}`);
 }
 
 getAnalysis();

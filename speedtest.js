@@ -13,6 +13,8 @@ var logger = new (winston.Logger)({
   ]
 });
 
+var hitServerOnce = false;
+
 var runSpeedTest = () => {
   console.log(moment().format('MMMM Do YYYY, h:mm:ss a'));
   console.log(`Type: ${testType}`);
@@ -23,7 +25,10 @@ var runSpeedTest = () => {
     logger.log('info',data);
   })
   .on('testserver', server => {
-    console.log(`Server: ${server.sponsor} - ${server.name} - ${server.bestPing.toFixed(0)}ms`);
+    if(!hitServerOnce) {
+      console.log(`Server: ${server.sponsor} - ${server.name} - ${server.bestPing.toFixed(0)}ms`);
+      hitServerOnce = true;
+    }
   })
   .on('downloadspeed', speed => {
     console.log(`download speed: ${(speed).toFixed(2)} Mb/s`);
