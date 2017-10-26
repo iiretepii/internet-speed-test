@@ -142,6 +142,19 @@ var plural = (num, str) => {
 	return num === 1 ? str : str + 's';
 }
 
+var divider;
+
+var getDivider = (overviewStr) => {
+	if(!divider) {
+		var dividerArray = [];
+		for (var i = overviewStr.length - 1; i >= 0; i--) {
+			dividerArray.push('~');
+		}
+		divider = dividerArray.join('');
+	}
+	return divider;
+}
+
 var getAnalysis = () => {
 	var results = getLogResults();
 	var analysisObj = getAnalysisObjects();
@@ -157,10 +170,12 @@ var getAnalysis = () => {
 		}
 	}
 	var logArray;
-	var divider = '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~';
+	var overviewStr = `Tested ${numberOfTests} ${plural(numberOfTests,'time')} over ${getTestDuration()}`;
+	getDivider(overviewStr);
+	overviewStr = `${getDivider()}\n${overviewStr}\n${getDivider()}`;
 	var resultsDebugArray = [
 		'final results:',
-		`\n${divider}\nTested ${numberOfTests} ${plural(numberOfTests,'time')} over ${getTestDuration()}`
+		overviewStr
 	];
 	var lr;
 	for(var key in analysisObj) {
@@ -181,7 +196,7 @@ var getAnalysis = () => {
 		resultsDebugArray.push(logArray.join('\n'));
 	}
 	logArray = null;
-	logger.log('info',`${resultsDebugArray.join('\n\n')}\n\n${divider}`);
+	logger.log('info',`${resultsDebugArray.join('\n\n')}\n\n${getDivider()}`);
 }
 
 getAnalysis();
