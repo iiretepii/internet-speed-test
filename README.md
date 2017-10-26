@@ -1,5 +1,5 @@
 # internet-speed-test
-Quick app to monitor internet speeds. It was written to monitor internet speeds at my apartment from a raspberry pi.
+Light-weight app to monitor and log internet speeds... to keep your isp honest
 
 # running the app
 There are only a few ways to run the app
