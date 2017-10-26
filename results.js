@@ -1,6 +1,6 @@
 var fs = require('fs');
 var moment = require("moment");
-var logger = require('./logging-service');
+var logger = require('./logging-service').logger;
 var getLogResults = require('./parse-log');
 
 // added 25% buffer
