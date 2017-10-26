@@ -3,6 +3,8 @@ var logger = require('winston');
 var getLogResults = require('./parse-log.js');
 var moment = require("moment");
 
+logger.level = process.env.LOGGING_LEVEL || 'info';
+
 var percent
 
 // added 25% buffer
@@ -99,24 +101,44 @@ var firstTime;
 var minTime;
 var maxTime;
 
-var getTestDuration = () => {
-	return moment(minTime).diff(moment(maxTime),'days');
-}
-
 var getTimeNumber = (dateTime) => {
-	var time = moment(dateTime).unix();
-	if(!minTime || time < minTime) {
-		minTime = time+0;
+	if(minTime == undefined || dateTime < minTime) {
+		minTime = dateTime+'';
+		logger.debug(`setting minTime ${formatDateTime(minTime)}`);
 	}
-	if(!maxTime || time > maxTime) {
-		maxTime = time+0;
+	if(maxTime == undefined || dateTime > maxTime) {
+		maxTime = dateTime+'';
+		logger.debug(`setting maxTime ${formatDateTime(maxTime)}`);
 	}
-	time = time / 60;
+	var time = moment(dateTime).unix() / 60;
 	if(!firstTime) {
 		firstTime = time + 0;
 	}
 	time = firstTime - time;
 	return time+0;
+}
+
+var getDuration = (timeUnit) => {
+	return moment(maxTime).diff(moment(minTime),timeUnit);
+}
+
+var getTestDuration = () => {
+	var durationUnits = ['days','hours','minutes','seconds'];
+	var duration;
+	var durationObj = {
+		time: 0,
+		unit: 'days'
+	};
+	for (var i = 0; i < durationUnits.length; i++) {
+		duration = getDuration(durationUnits[i]);
+		logger.debug(`duration ${duration} ${durationUnits[i]}`)
+		if(duration > 0) {
+			durationObj.time = duration;
+			durationObj.unit = durationUnits[i];
+			break;
+		}
+	}
+	return durationObj;
 }
 
 var getAnalysis = () => {
@@ -134,8 +156,12 @@ var getAnalysis = () => {
 		}
 	}
 	var logArray;
-	var divider = '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
-	var masterLogArray = [`\n${divider}\nTested over ${getTestDuration()} days\n${divider}`];
+	var divider = '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~';
+	var testDuration = getTestDuration();
+	var resultsDebugArray = [
+		'final results:',
+		`\n${divider}\nTested ${numberOfTests} times over ${testDuration.time} ${testDuration.unit}\n${divider}`
+	];
 	var lr;
 	for(var key in analysisObj) {
 		lr = linearRegression(analysisObj[key].times,analysisObj[key].speeds);
@@ -152,10 +178,10 @@ var getAnalysis = () => {
 		} else if(key === 'upload') {
 			logArray.push(`# times upload below expected: ${analysisObj[key].uploadUnder}`);
 		}
-		masterLogArray.push(logArray.join('\n'));
+		resultsDebugArray.push(logArray.join('\n'));
 	}
 	logArray = null;
-	logger.log('info',`\n${masterLogArray.join('\n\n')}\n\n${divider}`);
+	logger.log('info',`${resultsDebugArray.join('\n\n')}\n\n${divider}`);
 }
 
 getAnalysis();
