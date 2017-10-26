@@ -123,6 +123,8 @@ var getDuration = (timeUnit) => {
 }
 
 var getTestDuration = () => {
+	logger.debug(`min time: ${formatDateTime(minTime)}`);
+	logger.debug(`max time: ${formatDateTime(maxTime)}`);
 	var durationUnits = ['days','hours','minutes','seconds'];
 	var duration;
 	var durationObj = {
