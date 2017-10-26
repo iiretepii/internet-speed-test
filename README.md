@@ -8,10 +8,10 @@ There are only a few ways to run the app
 3. View results `$ node results.js`
 
 # environment variables
-⋅⋅* *EXPECTED_DOWNLOAD* - expected download speed in Mb/s
-⋅⋅* *EXPECTED_UPLOAD* - expected upload speed in Mb/s
-⋅⋅* *TEST_TYPE* - name the test that you're running
-⋅⋅* *LOGGING_LEVEL* - winston logging level
+* *EXPECTED_DOWNLOAD* - expected download speed in Mb/s
+* *EXPECTED_UPLOAD* - expected upload speed in Mb/s
+* *TEST_TYPE* - name the test that you're running
+* *LOGGING_LEVEL* - winston logging level
 
 # setting environment variables
 
