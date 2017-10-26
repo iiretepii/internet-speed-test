@@ -118,29 +118,28 @@ var getTimeNumber = (dateTime) => {
 	return time+0;
 }
 
-var getDuration = (timeUnit) => {
-	return moment(maxTime).diff(moment(minTime),timeUnit);
+var getDuration = () => {
+	return moment.duration(moment(maxTime).diff(moment(minTime)));
 }
 
 var getTestDuration = () => {
 	logger.debug(`min time: ${formatDateTime(minTime)}`);
 	logger.debug(`max time: ${formatDateTime(maxTime)}`);
-	var durationUnits = ['days','hours','minutes','seconds'];
-	var duration;
-	var durationObj = {
-		time: 0,
-		unit: 'days'
-	};
-	for (var i = 0; i < durationUnits.length; i++) {
-		duration = getDuration(durationUnits[i]);
-		logger.debug(`duration ${duration} ${durationUnits[i]}`)
-		if(duration > 0) {
-			durationObj.time = duration;
-			durationObj.unit = durationUnits[i];
-			break;
-		}
-	}
-	return durationObj;
+	var duration = getDuration();
+	var days = parseInt(duration.asDays());
+	var hours = parseInt(duration.asHours()) - days*24;
+	var minutes = parseInt(duration.asMinutes()) - days*24*60 - hours*60;
+	var seconds = parseInt(duration.asSeconds()) - days*24*60*60 - hours*60*60 - minutes*60;
+	var durationArray = [];
+	if(days > 0) durationArray.push(`${days} ${plural(days,'day')}`);
+	if(hours > 0) durationArray.push(`${hours} ${plural(hours,'hour')}`);
+	if(minutes > 0) durationArray.push(`${minutes} ${plural(minutes,'minute')}`);
+	if(seconds > 0) durationArray.push(`${seconds} ${plural(seconds,'second')}`);
+	return durationArray.join(', ');
+}
+
+var plural = (num, str) => {
+	return num === 1 ? str : str + 's';
 }
 
 var getAnalysis = () => {
@@ -159,10 +158,9 @@ var getAnalysis = () => {
 	}
 	var logArray;
 	var divider = '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~';
-	var testDuration = getTestDuration();
 	var resultsDebugArray = [
 		'final results:',
-		`\n${divider}\nTested ${numberOfTests} times over ${testDuration.time} ${testDuration.unit}\n${divider}`
+		`\n${divider}\nTested ${numberOfTests} ${plural(numberOfTests,'time')} over ${getTestDuration()}`
 	];
 	var lr;
 	for(var key in analysisObj) {
