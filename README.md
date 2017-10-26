@@ -1,4 +1,4 @@
-#internet-speed-test
+# internet-speed-test
 Quick app to monitor internet speeds. It was written to monitor internet speeds at my apartment from a raspberry pi.
 
 # running the app
