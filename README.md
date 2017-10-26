@@ -8,16 +8,20 @@ There are only a few ways to run the app
 3. View results `$ node results.js`
 
 # environment variables
-..* *EXPECTED_DOWNLOAD* - expected download speed in Mb/s
-..* *EXPECTED_UPLOAD* - expected upload speed in Mb/s
-..* *TEST_TYPE* - name the test that you're running
+⋅⋅* *EXPECTED_DOWNLOAD* - expected download speed in Mb/s
+⋅⋅* *EXPECTED_UPLOAD* - expected upload speed in Mb/s
+⋅⋅* *TEST_TYPE* - name the test that you're running
 
 # setting environment variables
 
 ## MacOSX/Linux
-```$ export EXPECTED_DOWNLOAD=1000
-$ echo $EXPECTED_DOWNLOAD // -> 1000```
+```
+$ export EXPECTED_DOWNLOAD=1000
+$ echo $EXPECTED_DOWNLOAD // -> 1000
+```
 
 ## Windows
-```C:\internet-speed-test>set EXPECTED_DOWNLOAD
-C:\internet-speed-test>echo %EXPECTED_DOWNLOAD%```
+```
+C:\internet-speed-test>set EXPECTED_DOWNLOAD
+C:\internet-speed-test>echo %EXPECTED_DOWNLOAD%
+```
