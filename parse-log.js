@@ -10,8 +10,7 @@ var getLogResults = () => {
 		var parsedEntry;
 		for (var i = logEntries.length - 1; i >= 0; i--) {
 			if(logEntries[i]) {
-				parsedEntry = JSON.parse(logEntries[i]);
-				logResults.push(parsedEntry);
+				logResults.push(JSON.parse(logEntries[i]));
 			}
 		}
 	}
