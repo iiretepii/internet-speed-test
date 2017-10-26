@@ -11,6 +11,7 @@ There are only a few ways to run the app
 ⋅⋅* *EXPECTED_DOWNLOAD* - expected download speed in Mb/s
 ⋅⋅* *EXPECTED_UPLOAD* - expected upload speed in Mb/s
 ⋅⋅* *TEST_TYPE* - name the test that you're running
+⋅⋅* *LOGGING_LEVEL* - winston logging level
 
 # setting environment variables
 
