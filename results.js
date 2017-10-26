@@ -155,6 +155,10 @@ var getDivider = (overviewStr) => {
 	return divider;
 }
 
+var getPercentage = (thisMany,thatMany) => {
+	return parseInt((thisMany / thatMany)*100) +'%';
+}
+
 var getAnalysis = () => {
 	var results = getLogResults();
 	var analysisObj = getAnalysisObjects();
@@ -189,9 +193,9 @@ var getAnalysis = () => {
 			`r2: ${lr.r2.toFixed(5)}`
 		];
 		if(key === 'download') {
-			logArray.push(`# times download below expected: ${analysisObj[key].downloadUnder}`);
+			logArray.push(`# times download below expected: ${analysisObj[key].downloadUnder} (${getPercentage(analysisObj[key].downloadUnder, numberOfTests)})`);
 		} else if(key === 'upload') {
-			logArray.push(`# times upload below expected: ${analysisObj[key].uploadUnder}`);
+			logArray.push(`# times upload below expected: ${analysisObj[key].uploadUnder} (${getPercentage(analysisObj[key].uploadUnder, numberOfTests)})`);
 		}
 		resultsDebugArray.push(logArray.join('\n'));
 	}
